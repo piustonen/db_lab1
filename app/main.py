@@ -218,7 +218,7 @@ def combine_data():
     conn = psycopg2.connect(dbname="test", user="postgres", password="postgres", host="db")
     cursor = conn.cursor()
     try:
-        cursor.execute('''
+        cursor.execute("""
             DROP TABLE IF EXISTS zno;
             CREATE TABLE zno AS
             SELECT *
@@ -226,7 +226,7 @@ def combine_data():
             UNION ALL
             SELECT *
             FROM zno2020;
-        ''')
+        """)
         conn.commit()
     except psycopg2.Error:
         print("Retrying in 5 seconds...")
@@ -241,7 +241,7 @@ def combine_data():
 def print_data():
     conn = psycopg2.connect(dbname="test", user="postgres", password="postgres", host="db")
     cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM zno2020 LIMIT 5''')
+    cursor.execute("""SELECT * FROM zno2020 LIMIT 5""")
     rows = cursor.fetchall()
     for row in rows:
         print(row)
@@ -258,9 +258,9 @@ def get_zno_data_by_year():
     try:
         cursor.execute("""
             SELECT region, 
-                   AVG(CASE WHEN year = '2019' AND math_test_stat = 'Зараховано' 
+                   AVG(CASE WHEN year = '2019' AND math_test_stat = "Зараховано" 
                      AND math_100 > 0 THEN math_100 END) AS avg_math_2019,
-                   AVG(CASE WHEN year = '2020' AND math_test_stat = 'Зараховано' 
+                   AVG(CASE WHEN year = '2020' AND math_test_stat = "Зараховано" 
                      AND math_100 > 0 THEN math_100 END) AS avg_math_2020
             FROM zno
             GROUP BY region""")
@@ -288,10 +288,11 @@ def get_zno_data_by_year():
 def write_in_file(dict_math):
     try:
         filename = os.path.join(os.getcwd(), "results.csv")
-        with open(filename, mode="w", newline='') as csv_file:
+        with open(filename, mode="w", newline="") as csv_file:
             writer = csv.writer(csv_file, delimiter=",")
             writer.writerow(["Regions", "2019", "2020"])
             for region, avg_math in dict_math.items():
+                print([region, avg_math[0], avg_math[1]])
                 writer.writerow([region, avg_math[0], avg_math[1]])
         print(f"Results are written to {filename}")
     except Exception:
@@ -299,7 +300,6 @@ def write_in_file(dict_math):
 
 
 def main():
-    print("Started")
     db_data()
     fill_year_column()
     get_zno_data_by_year()
