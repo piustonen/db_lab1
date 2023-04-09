@@ -179,8 +179,8 @@ def db_data():
                 if num_line == 0:
                     continue
                 try:
-                    line = line.replace('"', "").replace(',', '.').replace("null", "-1").strip()
-                    values = line.split(';')
+                    line = line.replace('"', "").replace(",", ".").replace("null", "-1").strip()
+                    values = line.split(";")
 
                     datatypes = ",".join(["%s"] * len(values))
                     cursor.execute(f"INSERT INTO {tables[i]} VALUES ({datatypes})", values)
